@@ -1,28 +1,39 @@
 <div class="container">
   <div class="header">
-   <h2>India Covid Data</h2>
+    <h2>India Covid Data</h2>
+    <div class="sort-arrow-section">
+      <span>Sort By Total Cases</span>
+      <div class="up-down-arrow_sub-section">
+        <span (click)="orderAsc()">&#x25B2;</span>
+        <span (click)="orderDesc()">&#x25BC;</span>
+      </div>
+    </div>
   </div>
   <div class="cases-stats-block" >
-    <div class="state_wise_block">
+    <div class="state_wise_block" *ngFor="let state of caseStats | keyvalue : sortOrder">
       <div class="state_name">
-        <h4>uu</h4>
+        <h4>{{state.key}}</h4>
       </div>
       <div class="cases_stats_block">
         <div class="cases_stats">
           <span>New Cases  - </span>
-          <span>1000</span>
+          <span *ngIf="state.value.dates[currentDate]?.total.confirmed">{{state.value.dates[currentDate]?.total.confirmed}}</span>
+          <span *ngIf="!state.value.dates[currentDate]?.total.confirmed">{{state.value.dates[previousDate]?.total.confirmed}}</span>
         </div>
          <div class="cases_stats">
           <span>Recovered - </span>
-          <span>100</span>
+          <span *ngIf="state.value.dates[currentDate]?.total.recovered">{{state.value.dates[currentDate]?.total.recovered}}</span>
+          <span *ngIf="!state.value.dates[currentDate]?.total.recovered">{{state.value.dates[previousDate]?.total.recovered}}</span>
         </div>
          <div class="cases_stats">
           <span>Deceased - </span>
-          <span>1</span>
+          <span *ngIf="state.value.dates[currentDate]?.total.deceased">{{state.value.dates[currentDate]?.total.deceased}}</span>
+          <span *ngIf="!state.value.dates[currentDate]?.total.deceased">{{state.value.dates[previousDate]?.total.deceased}}</span>
         </div>
          <div class="cases_stats">
           <span>Total - </span>
-          <span>1000</span>
+          <span *ngIf="state.value.dates[currentDate]?.total.tested">{{state.value.dates[currentDate]?.total.tested}}</span>
+          <span *ngIf="!state.value.dates[currentDate]?.total.tested">{{state.value.dates[previousDate]?.total.tested}}</span>
         </div>   
       </div>
     </div>
