@@ -1,0 +1,47 @@
+@import "../../styles/variables";
+@import "../../styles/elements";
+
+.container {
+  /* fallback for old browsers */
+  min-height: 100%;
+  background: #00f260;
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(141deg, #9fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, #00f260 #0575e6);
+  position: absolute;
+  width: 100%;
+
+	.header {
+		text-align : center;
+	}
+	.cases-stats-block {
+	  display: flex;
+	}
+	.state_wise_block {
+		width: $width-25;
+    display: flex;
+    flex-direction: column;
+    border: 1px black solid;
+    border-radius: 21px;
+    margin : 1%;
+    align-items: center;
+
+    .state_name {
+      border-bottom: 1px black solid;
+	    width: 100%;
+	    text-align: center;
+
+	    h4 {
+	      margin: 10px !important;
+	    }
+    }
+
+    .cases_stats_block {
+      margin: $margin-case-block;
+      .cases_stats {
+	    	display: flex;
+	    }
+    }
+	}
+}
