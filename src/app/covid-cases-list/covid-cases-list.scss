@@ -1,5 +1,5 @@
 @import "../../styles/variables";
-@import "../../styles/elements";
+@import "../../styles/common";
 
 .container {
  
@@ -34,6 +34,7 @@
     flex-wrap: wrap;
     width: 100%;
     padding:20px;
+    cursor : pointer;
   }
   .state_wise_block {
     width: $width-25;

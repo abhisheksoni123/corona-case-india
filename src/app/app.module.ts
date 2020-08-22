@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 import {CommonBaseService} from '../app/services/common.service';
 import {CovidCasesListComponent} from './covid-cases-list/covid-cases-list.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {CovidCasesListComponent} from './covid-cases-list/covid-cases-list.compo
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    HighchartsChartModule
   ],
   providers: [CommonBaseService],
   bootstrap: [AppComponent]

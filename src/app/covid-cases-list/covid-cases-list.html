@@ -11,34 +11,53 @@
   </div>
   <div class="cases-stats-block" >
     <div class="state_wise_block" *ngFor="let state of caseStats | keyvalue : sortOrder">
-      <div class="state_name">
+      <div class="state_name" (click)="loadChart(state.key,state.value)">
         <h4>{{state.key}}</h4>
       </div>
-      <div class="cases_stats_block">
+      <div class="cases_stats_block" (click)="loadChart(state.key,state.value)">
         <div class="cases_stats">
-          <span>New Cases  - </span>
+          <span>New Cases  : </span>
           <span *ngIf="state.value.dates[currentDate]?.total.confirmed">{{state.value.dates[currentDate]?.total.confirmed}}</span>
           <span *ngIf="!state.value.dates[currentDate]?.total.confirmed">{{state.value.dates[previousDate]?.total.confirmed}}</span>
         </div>
          <div class="cases_stats">
-          <span>Recovered - </span>
+          <span>Recovered : </span>
           <span *ngIf="state.value.dates[currentDate]?.total.recovered">{{state.value.dates[currentDate]?.total.recovered}}</span>
           <span *ngIf="!state.value.dates[currentDate]?.total.recovered">{{state.value.dates[previousDate]?.total.recovered}}</span>
         </div>
          <div class="cases_stats">
-          <span>Deceased - </span>
+          <span>Deceased : </span>
           <span *ngIf="state.value.dates[currentDate]?.total.deceased">{{state.value.dates[currentDate]?.total.deceased}}</span>
           <span *ngIf="!state.value.dates[currentDate]?.total.deceased">{{state.value.dates[previousDate]?.total.deceased}}</span>
         </div>
          <div class="cases_stats">
-          <span>Total - </span>
+          <span>Total : </span>
           <span *ngIf="state.value.dates[currentDate]?.total.tested">{{state.value.dates[currentDate]?.total.tested}}</span>
           <span *ngIf="!state.value.dates[currentDate]?.total.tested">{{state.value.dates[previousDate]?.total.tested}}</span>
         </div>   
       </div>
-    </div>
-    
+    </div>  
   </div>
 </div>
-
+<!-- <div class="modal_popup" role="dialog" data-backdrop="false" role="dialog" *ngIf="successPopup">
+  <div class="modal__wrapper">
+    <div class="img-warning">
+      <img src="../src/images/fingerprint-success.png" alt="" />
+    </div>
+    <div class="warning-message">
+      <span>
+        FINE DEDUCTED SUCCESSFULL
+      </span>
+    </div>
+  </div>
+</div> -->
+<!-- <div class="modal_popup" *ngIf="successPopup"> -->
+    <div [hidden]="successPopup" class="close_modal" (click)="closeModal()">
+      <img [hidden]="successPopup" src="assets/images/close.png" />
+    </div>
+    <div [hidden]="successPopup">
+      <div id="container" ></div>
+    </div>
+ 
+<!-- </div> -->
 <router-outlet></router-outlet>
