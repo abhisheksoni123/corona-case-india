@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef} from '@angular/core';
 import { Observable } from 'rxjs';
 import { KeyValue } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -26,28 +26,25 @@ export class CovidCasesListComponent {
   highcharts: typeof Highcharts;
   chartOptions:any;
   successPopup : any;
-  totalCasesSort = []
 
-  constructor(private commonService: CommonBaseService){
+  constructor(private commonService: CommonBaseService, private ref: ChangeDetectorRef){
     this.successPopup = true;
     this.caseStats = {};
     this.currentDate = this.formatDate(new Date(),0);
     this.previousDate = this.formatDate(new Date(),1);
-    // Preserve original property order
+    // Preserve original property order and set default order
     this.originalOrder = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
       return 0;
     }
-
+    // order in ascending order
     this.orderbyValueAsc = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
-      alert(2)
       return a.value['dates'][this.currentDate].total.confirmed >
        b.value['dates'][this.currentDate].total.confirmed ? -1 : 
        (a.value['dates'][this.currentDate].total.confirmed >
         b.value['dates'][this.currentDate].total.confirmed) ? 0 : 1  
     }
-    
+    // order in descending order
     this.orderbyValueDsc = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
-      alert(1)
      return a.value['dates'][this.currentDate].total.confirmed > b.value['dates'][this.currentDate].total.confirmed ? 1 :
       (a.value['dates'][this.currentDate].total.confirmed > b.value['dates'][this.currentDate].total.confirmed) ? 0 : -1  
     }
@@ -56,15 +53,9 @@ export class CovidCasesListComponent {
   }
 
   getTotalCasesFromApi(){
+    //get json response from api
     this.commonService.getCoronaCases().subscribe((response :any)=>{  
       this.caseStats = response;
-      console.log("caseStats",this.caseStats)
-      // for(let value in this.caseStats){
-      //   console.log("loop",value)
-      //   this.totalCasesSort.push({name:value,data:this.caseState[value]})
-      // }
-      // console.log("pushed",this.totalCasesSort)
-    //  console.log(response.AN.dates[this.currentDate].total)
       this.getCasesFromResponse();
     },err=>{
       console.log("error in network")
@@ -76,6 +67,7 @@ export class CovidCasesListComponent {
     this.dates = Object.values(this.caseStats);
   }
 
+  //format date time
   formatDate(date, value) {  
     let d = new Date(date),
     month = '' + (d.getMonth() + 1),
@@ -90,18 +82,15 @@ export class CovidCasesListComponent {
   }
 
   orderDesc(){
-    // this.sortOrder = this.orderbyValueDsc;
-    // console.log("dsc",this.sortOrder)
-
+    this.sortOrder = this.orderbyValueDsc;
   }
   orderAsc(){
-    // this.sortOrder = this.orderbyValueAsc;
-    // console.log("asc",this.sortOrder)
+    this.sortOrder = this.orderbyValueAsc;
   }
+
   loadChart(name,data){
-   this.successPopup = false;
+    this.successPopup = false;
     this.highcharts = Highcharts;
-    
     this.chartOptions = {   
       chart: {
          type: "line"
@@ -143,22 +132,19 @@ export class CovidCasesListComponent {
          name: name,
          data: this.getSeriesData(Object.values(data.dates))
       }]
-   };
-   Highcharts.chart('container', this.chartOptions);
-}
+    };
+    Highcharts.chart('container', this.chartOptions);
+  }
 
-getSeriesData(data){
-   let seriesArray = [];
-   data.map(obj => {
-      console.log("obj",obj)
+  getSeriesData(data){
+    let seriesArray = [];
+    data.map(obj => {
       seriesArray.push(obj.total.confirmed)
-   })
-   
-
-   return seriesArray;
-}
-closeModal() {
-  this.successPopup = true;
-}
-
+    })
+     return seriesArray;
+  }
+  closeModal() {
+    this.successPopup = true;
+    this.ref.detectChanges();
+  }
 }

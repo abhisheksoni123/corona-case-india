@@ -8,24 +8,21 @@
   bottom: -34px;
   display: flex;
 }
-
 .modal_class {
 	display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-
-  
 }
 .close_modal {
-    width: 12%;
-    display: flex;
-    justify-content: center;
-    top: 38px;
-    position: fixed;
-    right: -39px;
-    z-index: 1;
+  width: 12%;
+  display: flex;
+  justify-content: center;
+  top: 38px;
+  position: fixed;
+  right: -39px;
+  z-index: 1;
 
-    img {
-      width: 27%;
-    }
+  img {
+    width: 27%;
   }
+}

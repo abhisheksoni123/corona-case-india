@@ -1,4 +1,5 @@
 <div class="container">
+  <!-- header section -->
   <div class="header">
     <h2>India Covid Data</h2>
     <div class="sort-arrow-section">
@@ -9,6 +10,7 @@
       </div>
     </div>
   </div>
+  <!-- section for corona update blocks -->
   <div class="cases-stats-block" >
     <div class="state_wise_block" *ngFor="let state of caseStats | keyvalue : sortOrder">
       <div class="state_name" (click)="loadChart(state.key,state.value)">
@@ -39,25 +41,12 @@
     </div>  
   </div>
 </div>
-<!-- <div class="modal_popup" role="dialog" data-backdrop="false" role="dialog" *ngIf="successPopup">
-  <div class="modal__wrapper">
-    <div class="img-warning">
-      <img src="../src/images/fingerprint-success.png" alt="" />
-    </div>
-    <div class="warning-message">
-      <span>
-        FINE DEDUCTED SUCCESSFULL
-      </span>
-    </div>
-  </div>
-</div> -->
-<!-- <div class="modal_popup" *ngIf="successPopup"> -->
-    <div [hidden]="successPopup" class="close_modal" (click)="closeModal()">
-      <img [hidden]="successPopup" src="assets/images/close.png" />
-    </div>
-    <div [hidden]="successPopup">
-      <div id="container" ></div>
-    </div>
+<!-- Modal Section -->
+<div [hidden]="successPopup" class="close_modal" (click)="closeModal()">
+  <img [hidden]="successPopup" src="assets/images/close.png" />
+</div>
+<div [hidden]="successPopup">
+  <div id="container" ></div>
+</div>
  
-<!-- </div> -->
 <router-outlet></router-outlet>
