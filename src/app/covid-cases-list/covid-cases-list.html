@@ -13,7 +13,7 @@
   <!-- section for corona update blocks -->
   <div class="cases-stats-block" >
     <div class="state_wise_block" *ngFor="let state of caseStats | keyvalue : sortOrder">
-      <div class="state_name" (click)="loadChart(state.key,state.value)">
+      <div class="state_name" (click)="loadChart(state.key,state.value)" *ngIf="state">
         <h4>{{state.key}}</h4>
       </div>
       <div class="cases_stats_block" (click)="loadChart(state.key,state.value)">
