@@ -18,10 +18,6 @@ export class CovidCasesListComponent {
   states = [];
   dates = [];
   currentDate :string;
-  orderbyValueAsc;
-  orderbyValueDsc;
-  sortOrder;
-  originalOrder;
   previousDate : any;
   highcharts: typeof Highcharts;
   chartOptions:any;
@@ -32,65 +28,7 @@ export class CovidCasesListComponent {
     this.caseStats = {};
     this.currentDate = this.formatDate(new Date(),0);
     this.previousDate = this.formatDate(new Date(),1);
-    // Preserve original property order and set default order
-    this.originalOrder = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
-      return 0;
-    }
-    // order in ascending order
-    this.orderbyValueAsc = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
-      return a.value['dates'][this.currentDate].total.confirmed >
-       b.value['dates'][this.currentDate].total.confirmed ? -1 : 
-       (a.value['dates'][this.currentDate].total.confirmed >
-        b.value['dates'][this.currentDate].total.confirmed) ? 0 : 1  
-    }
-    // order in descending order
-    this.orderbyValueDsc = (a: KeyValue<number,string>, b: KeyValue<number,string>): number => {
-     return a.value['dates'][this.currentDate].total.confirmed > b.value['dates'][this.currentDate].total.confirmed ? 1 :
-      (a.value['dates'][this.currentDate].total.confirmed > b.value['dates'][this.currentDate].total.confirmed) ? 0 : -1  
-    }
-    this.sortOrder = this.originalOrder;
-    this.getTotalCasesFromApi();
-  }
-
-  getTotalCasesFromApi(){
-    //get json response from api
-    this.commonService.getCoronaCases().subscribe((response :any)=>{  
-      this.caseStats = response;
-      this.getCasesFromResponse();
-    },err=>{
-      console.log("error in network")
-    });
-  }
-
-  getCasesFromResponse(){
-    this.states  = Object.keys(this.caseStats);
-    this.dates = Object.values(this.caseStats);
-  }
-
-  //format date time
-  formatDate(date, value) {  
-    let d = new Date(date),
-    month = '' + (d.getMonth() + 1),
-    day = '' + (d.getDate() - value),
-    year = d.getFullYear();
-
-    if (month.length < 2) 
-      month = '0' + month;
-    if (day.length < 2) 
-      day = '0' + day;
-    return [year, month, day].join('-');
-  }
-
-  orderDesc(){
-    this.sortOrder = this.orderbyValueDsc;
-  }
-  orderAsc(){
-    this.sortOrder = this.orderbyValueAsc;
-  }
-
-  loadChart(name,data){
-    this.successPopup = false;
-    this.highcharts = Highcharts;
+    //highchart init variable
     this.chartOptions = {   
       chart: {
          type: "line"
@@ -102,7 +40,7 @@ export class CovidCasesListComponent {
          text: ""
       },
       xAxis:{
-         categories:Object.keys(data.dates)
+         categories:[]
       },
       yAxis: {          
          title:{
@@ -128,23 +66,109 @@ export class CovidCasesListComponent {
           }
         }]
       },
-      series: [{
-         name: name,
-         data: this.getSeriesData(Object.values(data.dates))
-      }]
+      series: []
     };
-    Highcharts.chart('container', this.chartOptions);
+
+    this.getTotalCasesFromApi();
+  }
+
+  chart
+  //ngonit function
+  ngOnInit():void{
+    this.chart = new (Highcharts.chart as any)('container', this.chartOptions);
+    this.chart.update({
+      xAxis:{
+         categories: []
+      },
+      series: [{
+         name: "",
+         data: []
+      }]
+    });
+  }
+
+  stateStats = [];
+  getTotalCasesFromApi(){
+    //get json response from api
+    this.commonService.getCoronaCases().subscribe((response :any)=>{  
+      this.caseStats = response;
+      for (let value in this.caseStats) {
+        this.stateStats.push({
+          name: value,
+          data: this.caseStats[value],
+        });
+      }
+      this.getCasesFromResponse();
+    },err=>{
+      console.log("error in network")
+    });
+  }
+
+  getCasesFromResponse(){
+    this.states  = Object.keys(this.caseStats);
+    this.dates = Object.values(this.caseStats);
+  }
+
+  //format date time
+  formatDate(date, value) {  
+    let d = new Date(date),
+    month = '' + (d.getMonth() + 1),
+    day = '' + (d.getDate() - value),
+    year = d.getFullYear();
+
+    if (month.length < 2) 
+      month = '0' + month;
+    if (day.length < 2) 
+      day = '0' + day;
+    return [year, month, day].join('-');
+  }
+
+  order = true;
+  orderBy() {
+    this.order = !this.order;
+    let int = this.order ? -1 : 1;
+    this.stateStats = this.stateStats.sort((a, b) => {
+      if (a.data.dates[this.currentDate]) {
+        if (a.data.dates[this.currentDate].total.tested > b.data.dates[this.currentDate].total.tested) {
+          return -int;
+        }
+        if (a.data.dates[this.currentDate].total.tested < b.data.dates[this.currentDate].total.tested) {
+          return int;
+        }
+      }
+      return 0;
+    });
+  }
+
+  loadChart(name,data){
+    this.successPopup = false;
+    this.highcharts = Highcharts;
+    this.chart = new (Highcharts.chart as any)('container', this.chartOptions);
+    var xAxisTemp = Object.keys(data.dates);
+    var dataTemp = this.getSeriesData(Object.values(data.dates));
+    if(xAxisTemp && dataTemp) {
+      this.chart.update({
+        xAxis:{
+           categories: xAxisTemp
+        },
+        series: [{
+           name: name,
+           data: dataTemp
+        }]
+      });
+    }
   }
 
   getSeriesData(data){
     let seriesArray = [];
     data.map(obj => {
+      if(obj.total.confirmed)
       seriesArray.push(obj.total.confirmed)
     })
      return seriesArray;
   }
   closeModal() {
+    this.chart={};
     this.successPopup = true;
-    this.ref.detectChanges();
   }
 }
